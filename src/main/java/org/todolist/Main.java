@@ -3,6 +3,7 @@ package org.todolist;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.UUID;
 
 import org.todolist.services.DynamoDbService;
 
@@ -23,8 +24,8 @@ public class Main {
 				int opt = sc.nextInt();
 				switch (opt) {
 					case 1:
-						System.out.print("Digite o ID da tarefa: ");
-						String taskId = sc.nextLine();
+
+						String taskId =  UUID.randomUUID().toString();
 						System.out.print("Digite a descrição da tarefa: ");
 						String description = sc.nextLine();
 
