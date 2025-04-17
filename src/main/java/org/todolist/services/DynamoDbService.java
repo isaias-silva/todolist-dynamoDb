@@ -1,5 +1,6 @@
 package org.todolist.services;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import software.amazon.awssdk.regions.Region;
@@ -23,18 +24,22 @@ public class DynamoDbService {
 	}
 
 
-	public void putItem(Map<String, AttributeValue> item) {
+	public void putItem(String id, String description) {
+		Map<String, AttributeValue> item = new HashMap<>();
+		item.put("id", AttributeValue.builder().s(id).build());
+		item.put("descricao", AttributeValue.builder().s(description).build());
+
 		PutItemRequest request = PutItemRequest.builder().tableName(tableName).item(item).build();
 
 		dynamoDbClient.putItem(request);
 	}
 
 
-	public GetItemResponse getItem(String key, String keyValue) {
+	public String getItem(String key, String keyValue) {
 		GetItemRequest request = GetItemRequest.builder().tableName(tableName)
 			.key(Map.of(key, AttributeValue.builder().s(keyValue).build())).build();
 
-		return dynamoDbClient.getItem(request);
+		return dynamoDbClient.getItem(request).item().get("descricao").s();
 	}
 
 	public void deleteItem(String key, String keyValue) {

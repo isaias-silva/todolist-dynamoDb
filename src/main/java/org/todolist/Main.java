@@ -1,14 +1,10 @@
 package org.todolist;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
 
 import org.todolist.services.DynamoDbService;
 
-import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
-import software.amazon.awssdk.services.dynamodb.model.GetItemResponse;
 
 public class Main {
 
@@ -20,7 +16,7 @@ public class Main {
 		while (inLoop) {
 			try {
 				System.out.println(
-					"lista de tarefas:\n1 - ver suas tarefas\n 2 - apagar tarefa \n 3 - buscar tarefa\n 0 - sair");
+					"lista de tarefas:\n1 - criar tarefa\n 2 - apagar tarefa \n 3 - buscar tarefa\n 0 - sair");
 				int opt = sc.nextInt();
 				switch (opt) {
 					case 1:
@@ -29,12 +25,8 @@ public class Main {
 						System.out.print("Digite a descrição da tarefa: ");
 						String description = sc.nextLine();
 
-						Map<String, AttributeValue> item = new HashMap<>();
 
-						item.put("id", AttributeValue.builder().s(taskId).build());
-						item.put("descricao", AttributeValue.builder().s(description).build());
-
-						dynamoDbService.putItem(item);
+						dynamoDbService.putItem(taskId,description);
 						System.out.println("Tarefa adicionada!");
 						break;
 					case 2:
@@ -47,12 +39,12 @@ public class Main {
 					case 3:
 						System.out.print("Digite o ID da tarefa para buscar: ");
 						String searchId = sc.nextLine();
-						GetItemResponse response = dynamoDbService.getItem("id", searchId);
-						if (response.item().isEmpty()) {
+						String response = dynamoDbService.getItem("id", searchId);
+						if (response.isEmpty()) {
 							System.out.println("Tarefa não encontrada.");
 						} else {
 							System.out.println(
-								"Tarefa encontrada: " + response.item().get("descricao").s());
+								"Tarefa encontrada: " + response);
 						}
 						break;
 					case 0:
